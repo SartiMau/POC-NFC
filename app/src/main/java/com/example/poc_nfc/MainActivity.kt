@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
                     val sb = StringBuffer()
                     for (i in answer.indices.reversed()) {
-                        sb.append(Integer.toString((answer[i] and 0xff.toByte()) + 0x100, 16).substring(1))
+                        sb.append(((answer[i].toInt() and 0xff) + 0x100).toString(16).substring(1))
                     }
 
                     textView.text = sb.toString()
