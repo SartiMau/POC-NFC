@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import java.io.IOException
+import java.util.Locale
 import kotlin.experimental.and
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity() {
     private var nfcAdapter: NfcAdapter? = null
     private var nfcIntent: PendingIntent? = null
 
-    private lateinit var textView: TextView
+    private lateinit var nfcText: TextView
+    private lateinit var puckIdText: TextView
     private lateinit var clearBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +41,12 @@ class MainActivity : AppCompatActivity() {
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0
         )
 
-        textView = findViewById(R.id.text)
+        nfcText = findViewById(R.id.nfc_reads_value)
+        puckIdText = findViewById(R.id.puck_id_value)
         clearBtn = findViewById(R.id.clear)
         clearBtn.setOnClickListener {
-            textView.text = ""
+            nfcText.text = ""
+            puckIdText.text = ""
         }
     }
 
@@ -89,7 +93,11 @@ class MainActivity : AppCompatActivity() {
                         sb.append(((answer[i].toInt() and 0xff) + 0x100).toString(16).substring(1))
                     }
 
-                    textView.text = sb.toString()
+                    val read = sb.toString().uppercase()
+                    nfcText.text = read
+
+                    // a Puck Id starts with "E00" and has 16 characters of length
+                    puckIdText.text = read.subSequence(read.indexOf("E00"), read.indexOf("E00") + 16)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
